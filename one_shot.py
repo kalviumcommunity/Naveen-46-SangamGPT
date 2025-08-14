@@ -28,17 +28,17 @@ def get_historical_period(ruler_name):
         "Period:"
     )
 
-    print(f"--- Sending One-Shot Prompt to Gemini (Temperature: 0.2) ---\n{prompt}\n---------------------------\n")
+    print(f"--- Sending One-Shot Prompt to Gemini (Top K: 30) ---\n{prompt}\n---------------------------\n")
 
     try:
         model = genai.GenerativeModel('gemini-1.5-flash')
         response = model.generate_content(
             prompt,
             generation_config={
-                "temperature": 0.2,  # Low temperature for factual accuracy
+                "temperature": 0.3,  # Low temperature for factual accuracy
+                "top_k": 30,  # Conservative Top K for historical facts
+                "top_p": 0.7,
                 "max_output_tokens": 150,
-                "top_p": 0.8,
-                "top_k": 40,
             }
         )
         result = response.text.strip()
