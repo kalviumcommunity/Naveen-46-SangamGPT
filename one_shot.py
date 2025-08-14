@@ -28,7 +28,7 @@ def get_historical_period(ruler_name):
         "Period:"
     )
 
-    print(f"--- Sending One-Shot Prompt to Gemini (Top K: 30) ---\n{prompt}\n---------------------------\n")
+    print(f"--- Sending One-Shot Prompt to Gemini (Stop Sequence: '\\n\\n') ---\n{prompt}\n---------------------------\n")
 
     try:
         model = genai.GenerativeModel('gemini-1.5-flash')
@@ -38,6 +38,7 @@ def get_historical_period(ruler_name):
                 "temperature": 0.3,  # Low temperature for factual accuracy
                 "top_k": 30,  # Conservative Top K for historical facts
                 "top_p": 0.7,
+                "stop_sequences": ["\n\n", "Ruler:", "END"],  # Stop at line breaks or next ruler
                 "max_output_tokens": 150,
             }
         )

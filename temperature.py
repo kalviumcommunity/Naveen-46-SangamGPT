@@ -26,24 +26,28 @@ class TemperatureExplorer:
     def __init__(self):
         self.model = genai.GenerativeModel('gemini-1.5-flash')
     
-    def generate_with_temperature(self, prompt: str, temperature: float, purpose: str, top_k: int = 60) -> str:
+    def generate_with_temperature(self, prompt: str, temperature: float, purpose: str, top_k: int = 60, stop_sequences: List[str] = None) -> str:
         """
-        Generate content with specific temperature and Top K settings.
+        Generate content with temperature, Top K, and stop sequence settings.
         """
         print(f"🌡️ Temperature: {temperature} ({purpose})")
         print(f"🔢 Top K: {top_k}")
+        if stop_sequences:
+            print(f"🛑 Stop Sequences: {stop_sequences}")
         print("=" * 50)
         
+        config = {
+            "temperature": temperature,
+            "top_k": top_k,
+            "top_p": 0.9,
+            "max_output_tokens": 500,
+        }
+        
+        if stop_sequences:
+            config["stop_sequences"] = stop_sequences
+        
         try:
-            response = self.model.generate_content(
-                prompt,
-                generation_config={
-                    "temperature": temperature,
-                    "top_k": top_k,  # Configurable Top K for vocabulary control
-                    "top_p": 0.9,
-                    "max_output_tokens": 500,
-                }
-            )
+            response = self.model.generate_content(prompt, generation_config=config)
             return response.text.strip()
         except Exception as e:
             return f"Error: {str(e)}"
@@ -59,7 +63,8 @@ What year did the Roman Empire fall? Provide specific dates and key events.
             prompt, 
             temperature, 
             "Factual Historical Query",
-            top_k=30  # Lower Top K for factual accuracy
+            top_k=30,  # Lower Top K for factual accuracy
+            stop_sequences=["In conclusion", "Summary:", "Note:"]  # Stop at analysis end
         )
     
     def creative_historical_narrative(self, temperature: float) -> str:
@@ -73,7 +78,8 @@ Write a creative description of what it might have felt like to be a Roman citiz
             prompt, 
             temperature, 
             "Creative Historical Narrative",
-            top_k=120  # Higher Top K for creative vocabulary
+            top_k=120,  # Higher Top K for creative vocabulary
+            stop_sequences=["THE END", "---", "EPILOGUE:"]  # Natural story endings
         )
     
     def analytical_comparison(self, temperature: float) -> str:
