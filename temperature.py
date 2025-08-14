@@ -26,11 +26,12 @@ class TemperatureExplorer:
     def __init__(self):
         self.model = genai.GenerativeModel('gemini-1.5-flash')
     
-    def generate_with_temperature(self, prompt: str, temperature: float, purpose: str) -> str:
+    def generate_with_temperature(self, prompt: str, temperature: float, purpose: str, top_k: int = 60) -> str:
         """
-        Generate content with a specific temperature setting.
+        Generate content with specific temperature and Top K settings.
         """
         print(f"🌡️ Temperature: {temperature} ({purpose})")
+        print(f"🔢 Top K: {top_k}")
         print("=" * 50)
         
         try:
@@ -38,9 +39,9 @@ class TemperatureExplorer:
                 prompt,
                 generation_config={
                     "temperature": temperature,
-                    "max_output_tokens": 500,
+                    "top_k": top_k,  # Configurable Top K for vocabulary control
                     "top_p": 0.9,
-                    "top_k": 40,
+                    "max_output_tokens": 500,
                 }
             )
             return response.text.strip()
@@ -57,7 +58,8 @@ What year did the Roman Empire fall? Provide specific dates and key events.
         return self.generate_with_temperature(
             prompt, 
             temperature, 
-            "Factual Historical Query"
+            "Factual Historical Query",
+            top_k=30  # Lower Top K for factual accuracy
         )
     
     def creative_historical_narrative(self, temperature: float) -> str:
@@ -70,7 +72,8 @@ Write a creative description of what it might have felt like to be a Roman citiz
         return self.generate_with_temperature(
             prompt, 
             temperature, 
-            "Creative Historical Narrative"
+            "Creative Historical Narrative",
+            top_k=120  # Higher Top K for creative vocabulary
         )
     
     def analytical_comparison(self, temperature: float) -> str:
@@ -83,7 +86,8 @@ Compare and contrast the military strategies of Alexander the Great and Julius C
         return self.generate_with_temperature(
             prompt, 
             temperature, 
-            "Analytical Comparison"
+            "Analytical Comparison",
+            top_k=70  # Medium Top K for analytical balance
         )
     
     def historical_brainstorming(self, temperature: float) -> str:
@@ -96,7 +100,8 @@ Generate 5 creative "what if" scenarios about ancient Indian history. Think of a
         return self.generate_with_temperature(
             prompt, 
             temperature, 
-            "Historical Brainstorming"
+            "Historical Brainstorming",
+            top_k=200  # High Top K for maximum creative vocabulary
         )
 
 
@@ -211,6 +216,8 @@ class TemperatureComparison:
                     prompt,
                     generation_config={
                         "temperature": temp,
+                        "top_k": 60,  # Consistent Top K for temperature comparison
+                        "top_p": 0.8,
                         "max_output_tokens": 300,
                     }
                 )
