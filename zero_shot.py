@@ -28,13 +28,21 @@ def get_king_summary(king_name):
         f"reign and major achievements of the following monarch: {king_name}"
     )
 
-    print(f"--- Sending Prompt to Gemini ---\n{prompt}\n---------------------------\n")
+    print(f"--- Sending Zero-Shot Prompt to Gemini (Top P: 0.8) ---\n{prompt}\n---------------------------\n")
 
     try:
         model = genai.GenerativeModel('gemini-1.5-flash')
         
-        # Send the prompt to the model
-        response = model.generate_content(prompt)
+        # Send the prompt to the model with Top P parameter
+        response = model.generate_content(
+            prompt,
+            generation_config={
+                "temperature": 0.6,
+                "top_p": 0.8,  # Good balance for educational content
+                "top_k": 40,
+                "max_output_tokens": 300,
+            }
+        )
         
         # Extract the text from the response
         result = response.text.strip()

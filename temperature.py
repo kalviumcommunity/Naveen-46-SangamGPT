@@ -25,11 +25,12 @@ class TemperatureExplorer:
     def __init__(self):
         self.model = genai.GenerativeModel('gemini-1.5-flash')
     
-    def generate_with_temperature(self, prompt: str, temperature: float, purpose: str) -> str:
+    def generate_with_temperature(self, prompt: str, temperature: float, purpose: str, top_p: float = 0.9) -> str:
         """
-        Generate content with a specific temperature setting.
+        Generate content with a specific temperature and Top P setting.
         """
         print(f"🌡️ Temperature: {temperature} ({purpose})")
+        print(f"🎯 Top P: {top_p}")
         print("=" * 50)
         
         try:
@@ -37,8 +38,8 @@ class TemperatureExplorer:
                 prompt,
                 generation_config={
                     "temperature": temperature,
+                    "top_p": top_p,  # Nucleus sampling parameter
                     "max_output_tokens": 500,
-                    "top_p": 0.9,
                     "top_k": 40,
                 }
             )
@@ -210,6 +211,7 @@ class TemperatureComparison:
                     prompt,
                     generation_config={
                         "temperature": temp,
+                        "top_p": 0.8,  # Consistent Top P for temperature comparison
                         "max_output_tokens": 300,
                     }
                 )
