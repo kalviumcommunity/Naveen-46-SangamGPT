@@ -11,7 +11,7 @@ try:
     api_key = os.environ.get("GOOGLE_API_KEY")
     if not api_key:
         raise ValueError("Please set GOOGLE_API_KEY in your .env file")
-    genai.configure (api_key=api_key)
+    genai.configure(api_key=api_key)
 except Exception as e:
     print(f"❌ API Configuration Error: {e}")
     exit(1)
