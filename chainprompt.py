@@ -18,6 +18,61 @@ except Exception as e:
     exit(1)
 
 
+# Global token tracking
+class TokenTracker:
+    def __init__(self):
+        self.total_tokens = 0
+        self.total_queries = 0
+        self.total_cost = 0.0
+    
+    def add_usage(self, tokens: int, cost: float):
+        self.total_tokens += tokens
+        self.total_queries += 1
+        self.total_cost += cost
+    
+    def get_summary(self):
+        return {
+            'total_tokens': self.total_tokens,
+            'total_queries': self.total_queries,
+            'total_cost': self.total_cost,
+            'avg_tokens_per_query': self.total_tokens / self.total_queries if self.total_queries > 0 else 0
+        }
+
+# Global tracker instance
+token_tracker = TokenTracker()
+
+
+def log_token_usage_cot(response, prompt_text: str, method_name: str):
+    """
+    Log token usage for Chain of Thought operations with global tracking.
+    """
+    try:
+        usage_metadata = response.usage_metadata
+        
+        input_tokens = getattr(usage_metadata, 'prompt_token_count', 0)
+        output_tokens = getattr(usage_metadata, 'candidates_token_count', 0)
+        total_tokens = getattr(usage_metadata, 'total_token_count', input_tokens + output_tokens)
+        
+        # Cost estimate
+        cost_estimate = total_tokens * 0.00015 / 1000
+        
+        # Update global tracker
+        token_tracker.add_usage(total_tokens, cost_estimate)
+        
+        print(f"\n🪙 CHAIN-OF-THOUGHT TOKEN USAGE - {method_name}")
+        print("-" * 50)
+        print(f"🔤 Input Tokens: {input_tokens}")
+        print(f"🔤 Output Tokens: {output_tokens}")
+        print(f"🔤 Total Tokens: {total_tokens}")
+        print(f"💰 Query Cost: ~${cost_estimate:.6f}")
+        print(f"📊 Running Total: {token_tracker.total_tokens:,} tokens")
+        print(f"💸 Session Cost: ~${token_tracker.total_cost:.6f}")
+        print("-" * 50)
+        
+    except Exception as e:
+        print(f"⚠️ Token logging error: {e}")
+
+
 class ChainOfThoughtAgent:
     """
     An AI agent that uses Chain of Thought prompting to break down complex
@@ -78,6 +133,10 @@ Please work through each step explicitly, showing your reasoning process.
                     "top_k": 40,
                 }
             )
+            
+            # Log token usage
+            log_token_usage_cot(response, cot_prompt, "Technological Revolution Analysis")
+            
             return response.text.strip()
         except Exception as e:
             return f"Error in analysis: {str(e)}"
@@ -322,6 +381,16 @@ def demonstrate_chain_of_thought():
     
     print("✨ Chain of Thought Reconstruction:")
     print(result4)
+    
+    # Print session token summary
+    print(f"\n📊 CHAIN-OF-THOUGHT SESSION SUMMARY")
+    print("=" * 60)
+    summary = token_tracker.get_summary()
+    print(f"🔢 Total Queries: {summary['total_queries']}")
+    print(f"🪙 Total Tokens: {summary['total_tokens']:,}")
+    print(f"💰 Total Cost: ~${summary['total_cost']:.6f}")
+    print(f"📊 Avg Tokens/Query: {summary['avg_tokens_per_query']:.1f}")
+    print("=" * 60)
 
 
 if __name__ == "__main__":

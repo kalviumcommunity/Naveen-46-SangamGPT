@@ -16,7 +16,6 @@ except Exception as e:
     print(f"❌ API Configuration Error: {e}")
     exit(1)
 
-
 class TemperatureExplorer:
     """
     Demonstrates how different temperature settings affect AI responses
