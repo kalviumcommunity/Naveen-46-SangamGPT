@@ -1,12 +1,3 @@
-"""
-SangamGPT - Function Calling Implementation
-==========================================
-This module demonstrates how to implement function calling with LLMs for historical data queries.
-The AI can call predefined functions to access our historical database and provide accurate responses.
-
-Author: SangamGPT Team
-"""
-
 import os
 import json
 import google.generativeai as genai
