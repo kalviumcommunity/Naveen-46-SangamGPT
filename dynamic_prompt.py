@@ -96,11 +96,19 @@ def get_dynamic_historical_info(figure_name, context="general", depth="moderate"
     # Create the dynamic prompt based on inputs
     prompt = create_dynamic_prompt(figure_name, context, depth)
     
-    print(f"--- Dynamic Prompt Generated ---\n{prompt}\n---------------------------\n")
+    print(f"--- Dynamic Prompt Generated (Temperature: 0.6) ---\n{prompt}\n---------------------------\n")
     
     try:
         model = genai.GenerativeModel('gemini-1.5-flash')
-        response = model.generate_content(prompt)
+        response = model.generate_content(
+            prompt,
+            generation_config={
+                "temperature": 0.6,  # Balanced temperature for dynamic content
+                "max_output_tokens": 300,
+                "top_p": 0.9,
+                "top_k": 40,
+            }
+        )
         result = response.text.strip()
         return result
 

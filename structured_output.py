@@ -1,6 +1,3 @@
-# Structured Output example with Google Gemini
-# pip install google-generativeai python-dotenv
-
 import os
 import json
 import google.generativeai as genai
@@ -50,13 +47,21 @@ Your response must be valid JSON only, no additional text or explanation.
 If you don't know a specific piece of information, use "Unknown" for strings or 0 for numbers.
 """
 
-    print(f"--- Requesting Structured Output for {historical_figure} ---")
+    print(f"--- Requesting Structured Output for {historical_figure} (Temperature: 0.2) ---")
     print(f"Expected JSON Schema:\n{json.dumps(json_schema, indent=2)}")
     print("---------------------------\n")
 
     try:
         model = genai.GenerativeModel('gemini-1.5-flash')
-        response = model.generate_content(prompt)
+        response = model.generate_content(
+            prompt,
+            generation_config={
+                "temperature": 0.2,  # Low temperature for structured, accurate data
+                "max_output_tokens": 800,
+                "top_p": 0.8,
+                "top_k": 30,
+            }
+        )
         
         # Extract and parse JSON response
         json_text = response.text.strip()

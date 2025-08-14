@@ -428,7 +428,15 @@ If you need to call functions to answer this query accurately, include the funct
         try:
             # Step 2: Get initial AI response
             print("🤖 AI is analyzing the query...")
-            response = self.model.generate_content(initial_prompt)
+            response = self.model.generate_content(
+                initial_prompt,
+                generation_config={
+                    "temperature": 0.4,  # Conservative temperature for function analysis
+                    "max_output_tokens": 800,
+                    "top_p": 0.8,
+                    "top_k": 40,
+                }
+            )
             ai_response = response.text.strip()
             
             print("📝 Initial AI Response:")
@@ -463,7 +471,15 @@ Please synthesize this information into a clear, informative, and engaging respo
 """
             
             print("🔄 Generating final response with function data...")
-            final_response = self.model.generate_content(final_prompt)
+            final_response = self.model.generate_content(
+                final_prompt,
+                generation_config={
+                    "temperature": 0.6,  # Balanced temperature for final synthesis
+                    "max_output_tokens": 1000,
+                    "top_p": 0.9,
+                    "top_k": 40,
+                }
+            )
             
             return final_response.text.strip()
             
