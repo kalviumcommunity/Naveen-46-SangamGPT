@@ -63,12 +63,21 @@ Please work through each step explicitly, showing your reasoning process.
 """
         
         print(f"⚙️ Analyzing technological revolution using Chain of Thought...")
-        print(f"� Invention: {invention}")
+        print(f"🔬 Invention: {invention}")
         print(f"📅 Period: {time_period}")
+        print("🌡️ Temperature: 0.6 (Balanced analytical creativity)")
         print("=" * 60)
         
         try:
-            response = self.model.generate_content(cot_prompt)
+            response = self.model.generate_content(
+                cot_prompt,
+                generation_config={
+                    "temperature": 0.6,  # Balanced temperature for analytical creativity
+                    "max_output_tokens": 1000,
+                    "top_p": 0.9,
+                    "top_k": 40,
+                }
+            )
             return response.text.strip()
         except Exception as e:
             return f"Error in analysis: {str(e)}"
@@ -114,13 +123,22 @@ Think: Considering all factors, how should we evaluate this leadership decision?
 Please work through each step, showing your reasoning clearly.
 """
         
-        print(f"� Evaluating leadership decision using Chain of Thought...")
-        print(f"� Leader: {leader}")
+        print(f"👑 Evaluating leadership decision using Chain of Thought...")
+        print(f"🧭 Leader: {leader}")
         print(f"⚖️ Decision: {difficult_decision}")
+        print("🌡️ Temperature: 0.4 (Conservative analytical approach)")
         print("=" * 60)
         
         try:
-            response = self.model.generate_content(cot_prompt)
+            response = self.model.generate_content(
+                cot_prompt,
+                generation_config={
+                    "temperature": 0.4,  # Lower temperature for balanced evaluation
+                    "max_output_tokens": 1000,
+                    "top_p": 0.8,
+                    "top_k": 40,
+                }
+            )
             return response.text.strip()
         except Exception as e:
             return f"Error in evaluation: {str(e)}"
@@ -167,12 +185,21 @@ Please think through each step clearly, showing your reasoning process.
 """
         
         print(f"🎭 Analyzing cultural transformation using Chain of Thought...")
-        print(f"� Change: {cultural_change}")
+        print(f"🌊 Change: {cultural_change}")
         print(f"🏛️ Society: {society}")
+        print("🌡️ Temperature: 0.7 (Creative cultural analysis)")
         print("=" * 60)
         
         try:
-            response = self.model.generate_content(cot_prompt)
+            response = self.model.generate_content(
+                cot_prompt,
+                generation_config={
+                    "temperature": 0.7,  # Higher temperature for creative cultural analysis
+                    "max_output_tokens": 1200,
+                    "top_p": 0.9,
+                    "top_k": 50,
+                }
+            )
             return response.text.strip()
         except Exception as e:
             return f"Error in cultural analysis: {str(e)}"
@@ -226,10 +253,19 @@ Please work through this investigation step by step, showing your reasoning clea
         print(f"🔍 Investigating historical mystery using Chain of Thought...")
         print(f"❓ Mystery: {mystery}")
         print(f"📋 Evidence pieces: {len(available_evidence)}")
+        print("🌡️ Temperature: 0.5 (Balanced detective work)")
         print("=" * 60)
         
         try:
-            response = self.model.generate_content(cot_prompt)
+            response = self.model.generate_content(
+                cot_prompt,
+                generation_config={
+                    "temperature": 0.5,  # Balanced temperature for mystery solving
+                    "max_output_tokens": 1000,
+                    "top_p": 0.85,
+                    "top_k": 40,
+                }
+            )
             return response.text.strip()
         except Exception as e:
             return f"Error in mystery investigation: {str(e)}"

@@ -35,12 +35,20 @@ def get_dynasty_from_ruler(ruler_name):
         "Dynasty:"
     )
 
-    print(f"--- Sending Prompt to Gemini ---\n{prompt}\n---------------------------\n")
+    print(f"--- Sending Multi-Shot Prompt to Gemini (Temperature: 0.3) ---\n{prompt}\n---------------------------\n")
 
     try:
         model = genai.GenerativeModel('gemini-1.5-flash')
         
-        response = model.generate_content(prompt)
+        response = model.generate_content(
+            prompt,
+            generation_config={
+                "temperature": 0.3,  # Lower temperature for pattern recognition
+                "max_output_tokens": 100,
+                "top_p": 0.8,
+                "top_k": 30,
+            }
+        )
       
         result = response.text.strip()
         return result

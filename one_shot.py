@@ -17,6 +17,7 @@ except (ValueError, TypeError) as e:
 def get_historical_period(ruler_name):
     """
     Uses one-shot prompting to identify the historical period of a ruler.
+    Uses low temperature (0.2) for factual accuracy.
     """
     
     prompt = (
@@ -27,11 +28,19 @@ def get_historical_period(ruler_name):
         "Period:"
     )
 
-    print(f"--- Sending One-Shot Prompt to Gemini ---\n{prompt}\n---------------------------\n")
+    print(f"--- Sending One-Shot Prompt to Gemini (Temperature: 0.2) ---\n{prompt}\n---------------------------\n")
 
     try:
         model = genai.GenerativeModel('gemini-1.5-flash')
-        response = model.generate_content(prompt)
+        response = model.generate_content(
+            prompt,
+            generation_config={
+                "temperature": 0.2,  # Low temperature for factual accuracy
+                "max_output_tokens": 150,
+                "top_p": 0.8,
+                "top_k": 40,
+            }
+        )
         result = response.text.strip()
         return result
 
